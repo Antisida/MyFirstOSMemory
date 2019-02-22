@@ -5,39 +5,15 @@ import java.util.*;
 public class ConnectivityTest {
     public static void main(String[] args) {
         MemoryStorage data = null;
-        MemoryStorage data1 = null;
-        List<OsmWay> ss = new ArrayList<>();
+
+
         try {
-             data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
-            //data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
+             //data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
+            data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MemoryStorage finalData = data;
-        if (data != null){
 
-            data.byTag("highway", o -> {
-
-                //if ((o.getTag("highway", finalData).equals("primary")) & (o.getTag("name", finalData) != null) )
-                if (
-                        o.getTag("highway", finalData).equals("service") ||
-                        o.getTag("highway", finalData).equals("unclassified") ||
-                        o.getTag("highway", finalData).equals("residential") ||
-                        o.getTag("highway", finalData).equals("tertiary") ||
-                        o.getTag("highway", finalData).equals("secondary") ||
-                        o.getTag("highway", finalData).equals("primary") ||
-                        o.getTag("highway", finalData).equals("motorway") ||
-                        o.getTag("highway", finalData).equals("trunk") ||
-                        o.getTag("highway", finalData).equals("living_street") ||
-                        o.getTag("highway", finalData).equals("motorway_link") ||
-                        o.getTag("highway", finalData).equals("trunk_link") ||
-                        o.getTag("highway", finalData).equals("primary_link") ||
-                        o.getTag("highway", finalData).equals("secondary_link")
-                        )
-                    if (o instanceof OsmWay) ss.add((OsmWay)o);
-               //System.out.println(o.getTag("name", finalData));
-            });
-        }
 
         System.out.println(ss.size());
 
@@ -113,6 +89,7 @@ public class ConnectivityTest {
         }
         System.out.println(index);
 
+
 // алгоритм поиска подграфов: елсли найден подграф с точкой, заносим его индекс из Ареейлиста в массив и ищем дальше.
         // если сли найден еще один подграф с точкой заносим его индекс в массив и т.д
         // объединяем найденные подграфы в один и удаляем ненужные
@@ -157,16 +134,36 @@ public class ConnectivityTest {
 //            //if (ss.get(100).getTag(i)!=null)
 //            System.out.println(ss.get(100).getTag(i));
 //        }
-
-
-
-
     }
 
 
 
 
+    void mergeSubgraf(){}
 
-
+        // медот возвращающий ArrayList всех значащих веев
+    ArrayList<OsmWay> dataToWays(MemoryStorage data) {
+        MemoryStorage memoryStorage = data;
+        ArrayList<OsmWay> ss = new ArrayList<>();
+        memoryStorage.byTag("highway", o -> {
+            if (
+                            o.getTag("highway", memoryStorage).equals("service") ||
+                            o.getTag("highway", memoryStorage).equals("unclassified") ||
+                            o.getTag("highway", memoryStorage).equals("residential") ||
+                            o.getTag("highway", memoryStorage).equals("tertiary") ||
+                            o.getTag("highway", memoryStorage).equals("secondary") ||
+                            o.getTag("highway", memoryStorage).equals("primary") ||
+                            o.getTag("highway", memoryStorage).equals("motorway") ||
+                            o.getTag("highway", memoryStorage).equals("trunk") ||
+                            o.getTag("highway", memoryStorage).equals("living_street") ||
+                            o.getTag("highway", memoryStorage).equals("motorway_link") ||
+                            o.getTag("highway", memoryStorage).equals("trunk_link") ||
+                            o.getTag("highway", memoryStorage).equals("primary_link") ||
+                            o.getTag("highway", memoryStorage).equals("secondary_link")
+                    )
+                if (o instanceof OsmWay) ss.add((OsmWay) o);
+        });
+        return ss;
+    }
 
 }
