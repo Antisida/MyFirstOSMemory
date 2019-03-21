@@ -24,8 +24,8 @@ public class ConnectivityTestTreeSet {
         ConnectivityTestTreeSet connectivityTest = new ConnectivityTestTreeSet();
         MemoryStorage data = null;
         try {
-           // data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
-            data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
+            data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
+           // data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
            // data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,7 +158,7 @@ public class ConnectivityTestTreeSet {
         ArrayList<OsmWay> ss = new ArrayList<>();
         data.byTag("highway", o -> {
             if (
-                        //    o.getTag("highway", data).equals("service") ||
+                            o.getTag("highway", data).equals("service") ||
                             o.getTag("highway", data).equals("unclassified") ||
                             o.getTag("highway", data).equals("residential") ||
                             o.getTag("highway", data).equals("tertiary") ||
