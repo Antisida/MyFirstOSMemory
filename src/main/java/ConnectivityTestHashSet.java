@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 public class ConnectivityTestHashSet {
 
+
     MemoryStorage data = null;
     private static long timeF;
     private static long timeFind;
@@ -156,7 +157,7 @@ public class ConnectivityTestHashSet {
         ArrayList<OsmWay> ss = new ArrayList<>();
         data.byTag("highway", o -> {
             if (
-                          // o.getTag("highway", data).equals("service") ||
+                           o.getTag("highway", data).equals("service") ||
                             o.getTag("highway", data).equals("unclassified") ||
                             o.getTag("highway", data).equals("residential") ||
                             o.getTag("highway", data).equals("tertiary") ||
