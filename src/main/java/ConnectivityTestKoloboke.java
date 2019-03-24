@@ -26,8 +26,8 @@ public class ConnectivityTestKoloboke {
         MemoryStorage data = null;
         try {
            // data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
-           // data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
-             data = new O5MReader().read(new File("e:\\osmtmp\\RU-MOS.o5m"));
+            data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
+            // data = new O5MReader().read(new File("e:\\osmtmp\\RU-MOS.o5m"));
            //data = new O5MReader().read(new File("e:\\osmtmp\\RU-TYU.o5m"));
            // data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
 
@@ -163,14 +163,14 @@ public class ConnectivityTestKoloboke {
         data.byTag("highway", o -> {
             if (
                        //    o.getTag("highway", data).equals("service") ||
-                        //    o.getTag("highway", data).equals("unclassified") ||
-                         //   o.getTag("highway", data).equals("residential") ||
+                            o.getTag("highway", data).equals("unclassified") ||
+                            o.getTag("highway", data).equals("residential") ||
                             o.getTag("highway", data).equals("tertiary") ||
                             o.getTag("highway", data).equals("secondary") ||
                             o.getTag("highway", data).equals("primary") ||
                             o.getTag("highway", data).equals("motorway") ||
                             o.getTag("highway", data).equals("trunk") ||
-                          //  o.getTag("highway", data).equals("living_street") ||
+                            o.getTag("highway", data).equals("living_street") ||
                             o.getTag("highway", data).equals("motorway_link") ||
                             o.getTag("highway", data).equals("trunk_link") ||
                             o.getTag("highway", data).equals("primary_link") ||
