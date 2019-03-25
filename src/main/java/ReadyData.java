@@ -7,7 +7,8 @@ public class ReadyData {
     String nameRegion;
     ArrayList<LongSet> outConnectivity;// для данных после окончательного теста связности
 
-    void print(){
+
+    void printRD(){
         System.out.println("------------" + nameRegion);
         for (LongSet longs: outConnectivity){
             System.out.print("Размер графа: "+ longs.size() + " ==>> ");

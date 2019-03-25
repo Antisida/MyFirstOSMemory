@@ -4,7 +4,6 @@ import org.alex73.osmemory.MemoryStorage;
 import org.alex73.osmemory.OsmWay;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static com.koloboke.collect.set.hash.HashLongSets.getDefaultFactory;
 
@@ -19,12 +18,12 @@ public class BaseTest {
     private static long counter = 0;
 
     static boolean[] completedRegion = new boolean[100];
-    static OsmRegion[] listReady1 = new OsmRegion[100];
+    static OsmRegion[] listReadyRegions = new OsmRegion[100];
     static ReadyData[] resultList = new ReadyData[100];
 
     // обработан уже регион?
     boolean isReady(int iID) {
-        if (listReady1[iID] != null) return true;
+        if (listReadyRegions[iID] != null) return true;
         return false;
     }
 
@@ -35,28 +34,32 @@ public class BaseTest {
     }
 
     private void afterTest(int id) {
-        OsmRegion osmRegion = listReady1[id];
-        resultList[id] = osmRegion.outData;
-
-        System.out.print("Список сетов для удаления: " );
-        for (Integer i: osmRegion.idSetForDelete) {
-            System.out.print(i + " ");
+        OsmRegion osmRegion = listReadyRegions[id];
+        if(osmRegion.ID == 37){
+            for (LongSet longs: osmRegion.afterGenProcessor){
+                for (long l: longs){
+                    System.out.print(" -"+ l);
+                }
+            }
         }
+
+//        System.out.print("Список сетов для удаления: " );
+//        for (Integer i: osmRegion.idSetForDelete) {
+//            System.out.print(i + " ");
+//        }
 
         if (!osmRegion.isUseful()) {
-            Iterator<LongSet> iterator = osmRegion.afterGenProcessor.iterator();
-            while (iterator.hasNext()){
-                LongSet longs = iterator.next();
-                for (Integer idForDel: osmRegion.idSetForDelete){
-                    if (osmRegion.afterGenProcessor.indexOf(longs) == idForDel) {
-                        iterator.remove();
-                        System.out.println("Удалил " + idForDel);
-                    }
-                }
-
-            }
-            listReady1[id] = null;
+            System.out.println("!!!!!!! "+osmRegion.name);
+            System.out.println(osmRegion.afterGenProcessor.size());
+            System.out.println(osmRegion.idSetForDelete.size());
+            osmRegion.afterGenProcessor.removeAll(osmRegion.idSetForDelete);
+            System.out.println(osmRegion.afterGenProcessor.size());
+            osmRegion.outData.outConnectivity = osmRegion.afterGenProcessor;
+            BaseTest.resultList[osmRegion.ID] = osmRegion.outData;
+            osmRegion.outData = null;
+            listReadyRegions[id] = null;
         }
+        //resultList[id] = osmRegion.outData;
     }
 
     void processReg(int ID) {
@@ -65,7 +68,8 @@ public class BaseTest {
             System.out.println("-----------------------");
             System.out.println(osmRegion.name);
             osmRegion.afterGenProcessor = connectTest(osmRegion.O5M_Data);
-            listReady1[ID] = osmRegion;
+            osmRegion.O5M_Data = null;
+            listReadyRegions[ID] = osmRegion;
         }
     }
 
@@ -182,7 +186,7 @@ public class BaseTest {
 
     //postprocessor
     void connectTestNeighbors(int ID) {
-        OsmRegion OUR_Region = listReady1[ID];
+        OsmRegion OUR_Region = listReadyRegions[ID];
 
         // проверяем все ли соседи обработаны, обрабатываем необработанных соседей
         for (int n : OUR_Region.neighbors) {
@@ -194,16 +198,17 @@ public class BaseTest {
         // проверяем связность с соседями и удаляем сеты, которые связаны с сетами соседа
         ArrayList<LongSet> waysOUR = OUR_Region.afterGenProcessor;
         for (int neighbor : OUR_Region.neighbors) {        //для каждого соседа
-            ArrayList<LongSet> waysN = listReady1[neighbor].afterGenProcessor;  // берем сеты у соседа
+            ArrayList<LongSet> waysN = listReadyRegions[neighbor].afterGenProcessor;  // берем сеты у соседа
             for (LongSet longsN : waysN) { //в сетах соседа берем по сету
                 for (int i = waysOUR.size() - 1; i > -1; i--) {
                     LongSet longsOUR = waysOUR.get(i);  //в своих сетах берем по сету
                     //if (longsOUR.size() > 1000) continue;  //если наш сет большой предполагаем что его не надо обсчитывать
                     for (long lo : longsOUR) { //каждую точку из нашего сета
                         if (longsN.contains(lo)
-                                & (longsN.size() > 50)
+                                & (longsN.size() > 500)
                         ) {   //проверяем есть ли эта точка в сетах соседа
-                            OUR_Region.idSetForDelete.add(i);
+                            if (!OUR_Region.idSetForDelete.contains(longsOUR))
+                            OUR_Region.idSetForDelete.add(longsOUR);
                             //waysOUR.remove(i); //если точка соседска удаляем сет из нашего набора
                             break;
                         }
@@ -226,7 +231,7 @@ public class BaseTest {
 //            }
 //        }
 
-        OUR_Region.outData.outConnectivity = waysOUR;
+       //OUR_Region.outData.outConnectivity = waysOUR;
     }
 
     private ArrayList<OsmWay> dataToWays(MemoryStorage data) {
@@ -235,8 +240,8 @@ public class BaseTest {
             if (
 //                   o.getTag("highway", data).equals("service") ||
 //                       o.getTag("highway", data).equals("living_street") ||
-//                      o.getTag("highway", data).equals("unclassified") ||
-//                    o.getTag("highway", data).equals("residential") ||
+                      o.getTag("highway", data).equals("unclassified") ||
+                    o.getTag("highway", data).equals("residential") ||
                     o.getTag("highway", data).equals("tertiary") ||
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary") ||

@@ -13,9 +13,10 @@ public class OsmRegion {
     int[] neighbors;
     String path;
     ArrayList<LongSet> afterGenProcessor; //для данных после теста связности этого региона
-    ArrayList<Integer> idSetForDelete = new ArrayList<>();
+    ArrayList<LongSet> idSetForDelete = new ArrayList<>();
     ReadyData outData;// для данных после окончательного теста связности
     ArrayList<OsmRegion> neighborsObjs = new ArrayList<>();
+
 
     public OsmRegion(int ID) {
         boolean notFind = true;
@@ -50,7 +51,8 @@ public class OsmRegion {
                 break;
             }
         }
-        if (this.ID == 52) result = false;
+        if (this.ID ==13) result = false;
+        if (this.ID == 37) result = false;
         return result;
     }
 }
