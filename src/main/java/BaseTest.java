@@ -17,64 +17,54 @@ public class BaseTest {
     private static long timeMergeSumm = 0;
     private static long counter = 0;
 
-    static boolean[] completedRegion = new boolean[100];
-    static OsmRegion[] listReadyRegions = new OsmRegion[100];
-    static ReadyData[] resultList = new ReadyData[100];
+    static boolean[] outerTestCompletedRegions = new boolean[100];
+    static BaseOsmRegion[] innerTestCompletedRegions = new BaseOsmRegion[100];
+    static ReadyData[] finalDatas = new ReadyData[100];
 
     // обработан уже регион?
-    boolean isReady(int iID) {
-        if (listReadyRegions[iID] != null) return true;
+    boolean isInnerTestComplete(int iID) {
+        if (innerTestCompletedRegions[iID] != null) return true;
         return false;
     }
 
     void aggregeteTest(int ID) {
         processReg(ID);
-        connectTestNeighbors(ID);
+        generalOuterConnectivityTest(ID);
         afterTest(ID);
     }
 
+    // если регион больше не нужен соседям, данные сохраняются, регион удаляется
     private void afterTest(int id) {
-        OsmRegion osmRegion = listReadyRegions[id];
-        if(osmRegion.ID == 37){
-            for (LongSet longs: osmRegion.afterGenProcessor){
-                for (long l: longs){
-                    System.out.print(" -"+ l);
-                }
-            }
-        }
-
-//        System.out.print("Список сетов для удаления: " );
-//        for (Integer i: osmRegion.idSetForDelete) {
-//            System.out.print(i + " ");
-//        }
+        OsmRegion osmRegion = (OsmRegion)innerTestCompletedRegions[id];
 
         if (!osmRegion.isUseful()) {
-            System.out.println("!!!!!!! "+osmRegion.name);
-            System.out.println(osmRegion.afterGenProcessor.size());
-            System.out.println(osmRegion.idSetForDelete.size());
-            osmRegion.afterGenProcessor.removeAll(osmRegion.idSetForDelete);
-            System.out.println(osmRegion.afterGenProcessor.size());
-            osmRegion.outData.outConnectivity = osmRegion.afterGenProcessor;
-            BaseTest.resultList[osmRegion.ID] = osmRegion.outData;
+            System.out.println("!!!!!!! " + osmRegion.name);
+            System.out.println(osmRegion.isolatedSets.size());
+            System.out.println(osmRegion.fofDeleteSets.size());
+            osmRegion.isolatedSets.removeAll(osmRegion.fofDeleteSets);
+
+
+            System.out.println(osmRegion.isolatedSets.size());
+            osmRegion.outData.finalIsolatedSets = osmRegion.isolatedSets;
+            BaseTest.finalDatas[osmRegion.ID] = osmRegion.outData;
             osmRegion.outData = null;
-            listReadyRegions[id] = null;
+            innerTestCompletedRegions[id] = null;
         }
-        //resultList[id] = osmRegion.outData;
     }
 
     void processReg(int ID) {
-        if (!isReady(ID)) {
+        if (isInnerTestComplete(ID) == false) {
             OsmRegion osmRegion = new OsmRegion(ID);
             System.out.println("-----------------------");
             System.out.println(osmRegion.name);
-            osmRegion.afterGenProcessor = connectTest(osmRegion.O5M_Data);
+            osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
             osmRegion.O5M_Data = null;
-            listReadyRegions[ID] = osmRegion;
+            innerTestCompletedRegions[ID] = osmRegion;
         }
     }
 
     //general processor
-    ArrayList<LongSet> connectTest(MemoryStorage memoryStorage) {
+    ArrayList<LongSet> innerConnectivityTest(MemoryStorage memoryStorage) {
         HashLongSetFactory hashLongSetFactory = getDefaultFactory();
         ArrayList<OsmWay> inputWays = dataToWays(memoryStorage);
 
@@ -93,8 +83,7 @@ public class BaseTest {
                 LongSet longTmp = hashLongSetFactory.newMutableSet(nodeIDs); // новый set для точек обрабатываемого вея // каждую точку добавляем в set
                 generalListOfNodesOfSubgraf.add(longTmp);   // сохраняем set точек первого вея в массив сетов
 
-            }
-            else {
+            } else {
                 tempListForMergeSubgraf.clear();
                 timeFind = System.nanoTime();
                 for (LongSet set : generalListOfNodesOfSubgraf) { // для каждого сета точек, которые уже находятся
@@ -185,54 +174,45 @@ public class BaseTest {
     }
 
     //postprocessor
-    void connectTestNeighbors(int ID) {
-        OsmRegion OUR_Region = listReadyRegions[ID];
+    void generalOuterConnectivityTest(int ID) {
+
+        OsmRegion myRegion = (OsmRegion)innerTestCompletedRegions[ID];
 
         // проверяем все ли соседи обработаны, обрабатываем необработанных соседей
-        for (int n : OUR_Region.neighbors) {
-            if (!isReady(n)) {
-                processReg(n);
+        for (int neighbor : myRegion.neighbors) {
+            if (isInnerTestComplete(neighbor) == false) {
+                processReg(neighbor);
             }
         }
 
         // проверяем связность с соседями и удаляем сеты, которые связаны с сетами соседа
-        ArrayList<LongSet> waysOUR = OUR_Region.afterGenProcessor;
-        for (int neighbor : OUR_Region.neighbors) {        //для каждого соседа
-            ArrayList<LongSet> waysN = listReadyRegions[neighbor].afterGenProcessor;  // берем сеты у соседа
-            for (LongSet longsN : waysN) { //в сетах соседа берем по сету
-                for (int i = waysOUR.size() - 1; i > -1; i--) {
-                    LongSet longsOUR = waysOUR.get(i);  //в своих сетах берем по сету
-                    //if (longsOUR.size() > 1000) continue;  //если наш сет большой предполагаем что его не надо обсчитывать
-                    for (long lo : longsOUR) { //каждую точку из нашего сета
-                        if (longsN.contains(lo)
-                                & (longsN.size() > 500)
-                        ) {   //проверяем есть ли эта точка в сетах соседа
-                            if (!OUR_Region.idSetForDelete.contains(longsOUR))
-                            OUR_Region.idSetForDelete.add(longsOUR);
-                            //waysOUR.remove(i); //если точка соседска удаляем сет из нашего набора
+        ArrayList<LongSet> myIsoletedSets = myRegion.isolatedSets;
+        for (int myNeighbor : myRegion.neighbors) {        //для каждого соседа
+            ArrayList<LongSet> neighbrIsoletedSets = innerTestCompletedRegions[myNeighbor].isolatedSets;  // берем сеты у соседа
+            myRegion.fofDeleteSets.addAll(simpleOuterConnectivityTest1(myIsoletedSets, neighbrIsoletedSets));
+        }
+        outerTestCompletedRegions[myRegion.ID] = true;
+    }
+
+    ArrayList<LongSet> simpleOuterConnectivityTest1(ArrayList<LongSet> myIsoletedSets, ArrayList<LongSet> neighbrIsoletedSets) {
+        ArrayList<LongSet> forDeleteSets = new ArrayList<>();
+        for (LongSet setNeighbor : neighbrIsoletedSets) { //в сетах соседа берем по сету
+            for (LongSet mySet : myIsoletedSets) {
+                for (long myNode : mySet) { //каждую точку из нашего сета
+                    if (setNeighbor.contains(myNode)  //проверяем есть ли эта точка в сетах соседа
+                            && (setNeighbor.size() > 500)
+                    ) {
+                        if (!forDeleteSets.contains(mySet)) {
+                            forDeleteSets.add(mySet);
                             break;
                         }
                     }
                 }
             }
         }
-        completedRegion[OUR_Region.ID] = true;
-        OUR_Region.isDone = true;
-
-//        int size1 = 0;
-//        for (LongSet set : waysOUR) {
-//            System.err.println("Размер графа: " + set.size());
-//            size1 = size1 + set.size();
-//            if (set.size() < 2000) {
-//                for (long Lpo : set) {
-//                    System.err.print(Lpo + " ");
-//                }
-//                System.err.println();
-//            }
-//        }
-
-       //OUR_Region.outData.outConnectivity = waysOUR;
+        return forDeleteSets; // возвращаем список сетов которые имеют связанность, и которые можно удалить
     }
+
 
     private ArrayList<OsmWay> dataToWays(MemoryStorage data) {
         ArrayList<OsmWay> ss = new ArrayList<>();
@@ -240,17 +220,22 @@ public class BaseTest {
             if (
 //                   o.getTag("highway", data).equals("service") ||
 //                       o.getTag("highway", data).equals("living_street") ||
-                      o.getTag("highway", data).equals("unclassified") ||
-                    o.getTag("highway", data).equals("residential") ||
-                    o.getTag("highway", data).equals("tertiary") ||
+                //    o.getTag("highway", data).equals("unclassified") ||
+                  //          o.getTag("ferry", data).equals("unclassified") ||
+                    //        o.getTag("highway", data).equals("residential") ||
+                            o.getTag("highway", data).equals("tertiary") ||
+                     //       o.getTag("ferry", data).equals("tertiary") ||
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary") ||
+                       //     o.getTag("ferry", data).equals("secondary") ||
                             o.getTag("highway", data).equals("secondary_link") ||
                             o.getTag("highway", data).equals("primary") ||
+                         //   o.getTag("ferry", data).equals("primary") ||
                             o.getTag("highway", data).equals("primary_link") ||
                             o.getTag("highway", data).equals("motorway_link") ||
                             o.getTag("highway", data).equals("motorway") ||
                             o.getTag("highway", data).equals("trunk") ||
+                           // o.getTag("ferry", data).equals("trunk") ||
                             o.getTag("highway", data).equals("trunk_link")
             )
                 if (o instanceof OsmWay) ss.add((OsmWay) o);

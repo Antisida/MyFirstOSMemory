@@ -1,4 +1,6 @@
 
+
+
 enum RussianRegion {
     NN(52, new int[]{12, 13, 21, 33, 37, 43, 44, 62}, "z:\\osmtmp\\RU-NIZ.o5m" ),
     VLADIMIR(33, new int[]{37, 50, 52, 62, 76}, "z:\\osmtmp\\RU-VLA.o5m" ),
@@ -24,16 +26,17 @@ enum RussianRegion {
     SMOLENSK(67, new int[]{32, 40, 50, 60, 69}, "z:\\osmtmp\\RU-SMO.o5m" ), //ДОБАВИТЬ БЕЛАРУС
     MOSCOW(50, new int[]{33, 40, 62, 67, 69, 71, 76}, "z:\\osmtmp\\RU-MOS.o5m" ),
     KALUGA(40, new int[]{32, 50, 57, 67, 71}, "z:\\osmtmp\\RU-KLU.o5m" ),
+
     BRYANSK(32, new int[]{32, 46, 57, 67}, "z:\\osmtmp\\RU-BRY.o5m" ), //ДОБАВИТЬ УКР, БЕЛАРУС
     TULA(71, new int[]{40, 48, 50, 57 ,62}, "z:\\osmtmp\\RU-TUL.o5m" ),
     OREL(57, new int[]{32, 40, 46, 48, 71}, "z:\\osmtmp\\RU-ORL.o5m" ),
-
     KURSK(46, new int[]{31, 32, 36, 48, 57}, "z:\\osmtmp\\RU-KRS.o5m" ), //ДОБАВИТЬ УКР
     BELGOROD(31, new int[]{36, 46}, "z:\\osmtmp\\RU-BEL.o5m" ), //ДОБАВИТЬ УКР
     LIPETSK(48, new int[]{36, 46, 57, 62, 68, 71}, "z:\\osmtmp\\RU-LIP.o5m" ),
     TAMBOV(68, new int[]{36, 48, 58, 62, 64, }, "z:\\osmtmp\\RU-TAM.o5m" ),
     VORONEZH(36, new int[]{31, 34, 46, 48, 61, 64, 68}, "z:\\osmtmp\\RU-VOR.o5m" ), //ДОБАВИТЬ УКР
     SARATOV(64, new int[]{34, 36, 58, 63, 68, 73}, "z:\\osmtmp\\RU-SAR.o5m" ), //ДОБАВИТЬ КАЗА
+
     VOLGOGRAD(34, new int[]{8, 30, 36, 61, 64 }, "z:\\osmtmp\\RU-VGG.o5m" ),//ДОБАВИТЬ КАЗА
     ASTRAHAN(30, new int[]{8, 34}, "z:\\osmtmp\\RU-AST.o5m" ), //ДОБАВИТЬ КАЗА
     ELISTA(8, new int[]{5, 26, 30, 34, 61}, "z:\\osmtmp\\RU-KL.o5m" ),
@@ -43,6 +46,7 @@ enum RussianRegion {
     KRASNODAR(23, new int[]{9, 26, 61, 82}, "z:\\osmtmp\\RU-KDA.o5m" ), //ДОБАВИТЬ АБХАЗИ
     STAVROPOL(26, new int[]{5, 7, 8, 9, 15, 20, 23, 61}, "z:\\osmtmp\\RU-STA.o5m" ),
     CHERKESSK(9, new int[]{7, 23, 26, }, "z:\\osmtmp\\RU-KC.o5m" ), // ДОБАВИТЬ АБХ, ГРУ
+
     NALCHIK(7, new int[]{9, 15, 26}, "z:\\osmtmp\\RU-KB.o5m" ), // ДОБАВИТЬ ГРУ
     VLADIKAVKAZ(15, new int[]{6, 7, 20, 26}, "z:\\osmtmp\\RU-SE.o5m" ), // ДОБАВИТЬ ГРУ, ОСЕТ
     NAZRAN(6, new int[]{15, 20}, "z:\\osmtmp\\RU-IN.o5m" ), // ДОБАВИТЬ ГРУЗ
@@ -52,6 +56,7 @@ enum RussianRegion {
     ORENBURG(56, new int[]{2, 16, 63, 64, 74}, "z:\\osmtmp\\RU-ORE.o5m" ), // ДОБАВИТЬ КАЗА
     UFA(2, new int[]{16, 18, 56, 59, 66, 74}, "z:\\osmtmp\\RU-BA.o5m" ),
     CHELYABINSK(74, new int[]{2, 45, 56, 66}, "z:\\osmtmp\\RU-CHE.o5m" ), //ДОБАВИТЬ КАЗА
+
     IZHEVSK(18, new int[]{2, 16, 43, 59}, "z:\\osmtmp\\RU-UD.o5m" ),
     PERM(59, new int[]{2, 11, 18, 43, 66}, "z:\\osmtmp\\RU-PER.o5m" ),
     EKATERINBURG(66, new int[]{2, 11, 45, 59, 72, 74, 86 }, "z:\\osmtmp\\RU-SVE.o5m" ),
