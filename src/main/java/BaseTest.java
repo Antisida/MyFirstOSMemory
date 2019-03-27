@@ -30,25 +30,33 @@ public class BaseTest {
     void aggregeteTest(int ID) {
         processReg(ID);
         generalOuterConnectivityTest(ID);
-        afterTest(ID);
+        afterTest();
     }
 
     // если регион больше не нужен соседям, данные сохраняются, регион удаляется
-    private void afterTest(int id) {
-        OsmRegion osmRegion = (OsmRegion)innerTestCompletedRegions[id];
-
-        if (!osmRegion.isUseful()) {
-            System.out.println("!!!!!!! " + osmRegion.name);
-            System.out.println(osmRegion.isolatedSets.size());
-            System.out.println(osmRegion.fofDeleteSets.size());
-            osmRegion.isolatedSets.removeAll(osmRegion.fofDeleteSets);
+    private void afterTest() {
+        OsmRegion o1 = null;
+        //OsmRegion osmRegion = (OsmRegion)innerTestCompletedRegions[id];
+        for (BaseOsmRegion osmRegion : innerTestCompletedRegions) {
+            if (osmRegion != null) {
+                o1 = (OsmRegion) osmRegion;
 
 
-            System.out.println(osmRegion.isolatedSets.size());
-            osmRegion.outData.finalIsolatedSets = osmRegion.isolatedSets;
-            BaseTest.finalDatas[osmRegion.ID] = osmRegion.outData;
-            osmRegion.outData = null;
-            innerTestCompletedRegions[id] = null;
+                if (!o1.isUseful()) {
+                    System.out.println("!!!!!!! " + o1.name);
+                    System.out.println(o1.isolatedSets.size());
+                    System.out.println(o1.fofDeleteSets.size());
+                    o1.isolatedSets.removeAll(o1.fofDeleteSets);
+
+
+                    System.out.println(o1.isolatedSets.size());
+                    o1.outData.finalIsolatedSets = o1.isolatedSets;
+                    BaseTest.finalDatas[o1.ID] = o1.outData;
+                    o1.outData = null;
+                    innerTestCompletedRegions[o1.ID] = null;
+                }
+
+            }
         }
     }
 
@@ -176,7 +184,7 @@ public class BaseTest {
     //postprocessor
     void generalOuterConnectivityTest(int ID) {
 
-        OsmRegion myRegion = (OsmRegion)innerTestCompletedRegions[ID];
+        OsmRegion myRegion = (OsmRegion) innerTestCompletedRegions[ID];
 
         // проверяем все ли соседи обработаны, обрабатываем необработанных соседей
         for (int neighbor : myRegion.neighbors) {
@@ -194,14 +202,15 @@ public class BaseTest {
         outerTestCompletedRegions[myRegion.ID] = true;
     }
 
-    ArrayList<LongSet> simpleOuterConnectivityTest1(ArrayList<LongSet> myIsoletedSets, ArrayList<LongSet> neighbrIsoletedSets) {
+    ArrayList<LongSet> simpleOuterConnectivityTest1
+            (ArrayList<LongSet> myIsoletedSets, ArrayList<LongSet> neighbrIsoletedSets) {
         ArrayList<LongSet> forDeleteSets = new ArrayList<>();
         for (LongSet setNeighbor : neighbrIsoletedSets) { //в сетах соседа берем по сету
             for (LongSet mySet : myIsoletedSets) {
                 for (long myNode : mySet) { //каждую точку из нашего сета
                     if (setNeighbor.contains(myNode)  //проверяем есть ли эта точка в сетах соседа
                             && (setNeighbor.size() > 500)
-                    ) {
+                            ) {
                         if (!forDeleteSets.contains(mySet)) {
                             forDeleteSets.add(mySet);
                             break;
@@ -221,23 +230,23 @@ public class BaseTest {
 //                   o.getTag("highway", data).equals("service") ||
 //                       o.getTag("highway", data).equals("living_street") ||
                 //    o.getTag("highway", data).equals("unclassified") ||
-                  //          o.getTag("ferry", data).equals("unclassified") ||
-                    //        o.getTag("highway", data).equals("residential") ||
-                            o.getTag("highway", data).equals("tertiary") ||
-                     //       o.getTag("ferry", data).equals("tertiary") ||
+                //          o.getTag("ferry", data).equals("unclassified") ||
+                //        o.getTag("highway", data).equals("residential") ||
+                    o.getTag("highway", data).equals("tertiary") ||
+                            //       o.getTag("ferry", data).equals("tertiary") ||
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary") ||
-                       //     o.getTag("ferry", data).equals("secondary") ||
+                            //     o.getTag("ferry", data).equals("secondary") ||
                             o.getTag("highway", data).equals("secondary_link") ||
                             o.getTag("highway", data).equals("primary") ||
-                         //   o.getTag("ferry", data).equals("primary") ||
+                            //   o.getTag("ferry", data).equals("primary") ||
                             o.getTag("highway", data).equals("primary_link") ||
                             o.getTag("highway", data).equals("motorway_link") ||
                             o.getTag("highway", data).equals("motorway") ||
                             o.getTag("highway", data).equals("trunk") ||
-                           // o.getTag("ferry", data).equals("trunk") ||
+                            // o.getTag("ferry", data).equals("trunk") ||
                             o.getTag("highway", data).equals("trunk_link")
-            )
+                    )
                 if (o instanceof OsmWay) ss.add((OsmWay) o);
         });
         return ss;

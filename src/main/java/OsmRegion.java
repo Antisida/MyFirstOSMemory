@@ -43,15 +43,19 @@ public class OsmRegion extends BaseOsmRegion{
     }
 
     boolean isUseful(){
+        System.out.println("Проверка на isUseful " + this.name);
         boolean result = false;
         for (int idNeb: this.neighbors) {
+            System.out.println("Сосед " + idNeb +" = " + BaseTest.outerTestCompletedRegions[idNeb]);
             if (BaseTest.outerTestCompletedRegions[idNeb] != true) {
+                System.out.println(" =>> тест не пройден");
                 result = true;
                 break;
             }
         }
 //        if (this.ID ==13) result = false; //убрать
 //        if (this.ID == 44) result = false;
+        if (!result) System.out.println(this.name + " isUseful!!!!");
         return result;
     }
 }
