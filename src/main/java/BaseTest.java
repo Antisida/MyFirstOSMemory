@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import static com.koloboke.collect.set.hash.HashLongSets.getDefaultFactory;
 
 public class BaseTest {
+    //todo занести в граничные регионы российские регионы
+    //todo создать enum граничных регионов для сериализации
 
     private static long timeF;
     private static long timeFind;
@@ -17,8 +19,8 @@ public class BaseTest {
     private static long timeMergeSumm = 0;
     private static long counter = 0;
 
-    static boolean[] outerTestCompletedRegions = new boolean[100];
-    static BaseOsmRegion[] innerTestCompletedRegions = new BaseOsmRegion[100];
+    static boolean[] outerTestCompletedRegions = new boolean[150];
+    static OsmRegion[] innerTestCompletedRegions = new OsmRegion[150];
     static ReadyData[] finalDatas = new ReadyData[100];
 
     // обработан уже регион?
@@ -27,9 +29,9 @@ public class BaseTest {
         return false;
     }
 
-    void aggregeteTest(int ID) {
-        processReg(ID);
-        generalOuterConnectivityTest(ID);
+    void aggregeteTest(RussianRegion russianRegion) {//todo переделать на RRegion
+        processReg(russianRegion);
+        generalOuterConnectivityTest(russianRegion);
         afterTest();
     }
 
@@ -37,9 +39,9 @@ public class BaseTest {
     private void afterTest() {
         OsmRegion o1 = null;
         //OsmRegion osmRegion = (OsmRegion)innerTestCompletedRegions[id];
-        for (BaseOsmRegion osmRegion : innerTestCompletedRegions) {
+        for (OsmRegion osmRegion : innerTestCompletedRegions) {
             if (osmRegion != null) {
-                o1 = (OsmRegion) osmRegion;
+                o1 = osmRegion;
 
 
                 if (!o1.isUseful()) {
@@ -60,16 +62,43 @@ public class BaseTest {
         }
     }
 
-    void processReg(int ID) {
-        if (isInnerTestComplete(ID) == false) {
-            OsmRegion osmRegion = new OsmRegion(ID);
+    void processReg(RussianRegion russianRegion) {
+        if (isInnerTestComplete(russianRegion.id) == false) {
+            OsmRegion osmRegion;
+            if (russianRegion.id > 100){
+                //todo добавить чтение сериализованного объекта
+                osmRegion = new OsmRegion(russianRegion);
+                innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
+            }else {
+                osmRegion = new OsmRegion(russianRegion);
+            }
+
             System.out.println("-----------------------");
             System.out.println(osmRegion.name);
             osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
             osmRegion.O5M_Data = null;
-            innerTestCompletedRegions[ID] = osmRegion;
+            innerTestCompletedRegions[russianRegion.id] = osmRegion;
         }
     }
+
+//    void processReg(int ID) {
+//        if (isInnerTestComplete(ID) == false) {
+//            OsmRegion osmRegion;
+//            if (ID > 100){
+//                //todo добавить чтение сериализованного объекта
+//                osmRegion = new OsmRegion(ID);
+//                innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
+//            }else {
+//                osmRegion = new OsmRegion(ID);
+//            }
+//
+//            System.out.println("-----------------------");
+//            System.out.println(osmRegion.name);
+//            osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
+//            osmRegion.O5M_Data = null;
+//            innerTestCompletedRegions[ID] = osmRegion;
+//        }
+//    }
 
     //general processor
     ArrayList<LongSet> innerConnectivityTest(MemoryStorage memoryStorage) {
@@ -182,14 +211,20 @@ public class BaseTest {
     }
 
     //postprocessor
-    void generalOuterConnectivityTest(int ID) {
+    void generalOuterConnectivityTest(RussianRegion russianRegion) {
 
-        OsmRegion myRegion = (OsmRegion) innerTestCompletedRegions[ID];
+        OsmRegion myRegion = innerTestCompletedRegions[russianRegion.id];
 
         // проверяем все ли соседи обработаны, обрабатываем необработанных соседей
         for (int neighbor : myRegion.neighbors) {
             if (isInnerTestComplete(neighbor) == false) {
-                processReg(neighbor);
+                RussianRegion neighborRussianRegion = null;
+                for (RussianRegion russianR: RussianRegion.values()){
+                    if (russianR.id == neighbor){
+                        neighborRussianRegion = russianR;
+                    }
+                }
+                processReg(neighborRussianRegion);
             }
         }
 
@@ -229,17 +264,17 @@ public class BaseTest {
             if (
 //                   o.getTag("highway", data).equals("service") ||
 //                       o.getTag("highway", data).equals("living_street") ||
-                //    o.getTag("highway", data).equals("unclassified") ||
-                //          o.getTag("ferry", data).equals("unclassified") ||
-                //        o.getTag("highway", data).equals("residential") ||
+                    o.getTag("highway", data).equals("unclassified") ||
+
+                        o.getTag("highway", data).equals("residential") ||
                     o.getTag("highway", data).equals("tertiary") ||
-                            //       o.getTag("ferry", data).equals("tertiary") ||
+
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary") ||
-                            //     o.getTag("ferry", data).equals("secondary") ||
+
                             o.getTag("highway", data).equals("secondary_link") ||
                             o.getTag("highway", data).equals("primary") ||
-                            //   o.getTag("ferry", data).equals("primary") ||
+
                             o.getTag("highway", data).equals("primary_link") ||
                             o.getTag("highway", data).equals("motorway_link") ||
                             o.getTag("highway", data).equals("motorway") ||
