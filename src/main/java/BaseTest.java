@@ -3,15 +3,15 @@ import com.koloboke.collect.set.hash.HashLongSetFactory;
 import org.alex73.osmemory.MemoryStorage;
 import org.alex73.osmemory.OsmWay;
 
+import java.io.*;
 import java.util.ArrayList;
 
 import static com.koloboke.collect.set.hash.HashLongSets.getDefaultFactory;
 
 public class BaseTest {
-    //todo занести в граничные регионы российские регионы
-    //todo создать enum граничных регионов для сериализации
 
     private static long timeF;
+
     private static long timeFind;
     private static long delta = 0L;
     private static long timeFindSumm = 0L;
@@ -29,7 +29,7 @@ public class BaseTest {
         return false;
     }
 
-    void aggregeteTest(RussianRegion russianRegion) {//todo переделать на RRegion
+    void aggregeteTest(RussianRegion russianRegion) {
         processReg(russianRegion);
         generalOuterConnectivityTest(russianRegion);
         afterTest();
@@ -42,8 +42,6 @@ public class BaseTest {
         for (OsmRegion osmRegion : innerTestCompletedRegions) {
             if (osmRegion != null) {
                 o1 = osmRegion;
-
-
                 if (!o1.isUseful()) {
                     System.out.println("!!!!!!! " + o1.name);
                     System.out.println(o1.isolatedSets.size());
@@ -65,11 +63,10 @@ public class BaseTest {
     void processReg(RussianRegion russianRegion) {
         if (isInnerTestComplete(russianRegion.id) == false) {
             OsmRegion osmRegion;
-            if (russianRegion.id > 100){
-                //todo добавить чтение сериализованного объекта
-                osmRegion = new OsmRegion(russianRegion);
+            if (russianRegion.isRussian == false) {
+                osmRegion = deSerializeOsmRegion(russianRegion);
                 innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
-            }else {
+            } else {
                 osmRegion = new OsmRegion(russianRegion);
             }
 
@@ -219,8 +216,8 @@ public class BaseTest {
         for (int neighbor : myRegion.neighbors) {
             if (isInnerTestComplete(neighbor) == false) {
                 RussianRegion neighborRussianRegion = null;
-                for (RussianRegion russianR: RussianRegion.values()){
-                    if (russianR.id == neighbor){
+                for (RussianRegion russianR : RussianRegion.values()) {
+                    if (russianR.id == neighbor) {
                         neighborRussianRegion = russianR;
                     }
                 }
@@ -266,8 +263,8 @@ public class BaseTest {
 //                       o.getTag("highway", data).equals("living_street") ||
                     o.getTag("highway", data).equals("unclassified") ||
 
-                        o.getTag("highway", data).equals("residential") ||
-                    o.getTag("highway", data).equals("tertiary") ||
+                            o.getTag("highway", data).equals("residential") ||
+                            o.getTag("highway", data).equals("tertiary") ||
 
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary") ||
@@ -285,5 +282,31 @@ public class BaseTest {
                 if (o instanceof OsmWay) ss.add((OsmWay) o);
         });
         return ss;
+    }
+
+    void serializeOsmRegion(OsmRegion osmRegion) {
+        try {
+            ObjectOutputStream outputStream =
+                    new ObjectOutputStream(new BufferedOutputStream(
+                            new FileOutputStream(new File(osmRegion.name + ".bin"))));
+            outputStream.writeObject(osmRegion);
+            outputStream.close();
+        } catch (IOException e) {
+            System.out.println("Не удалось создать bin-файл");
+        }
+    }
+
+    OsmRegion deSerializeOsmRegion(RussianRegion russianRegion) {
+        OsmRegion osmRegion = null;
+        try {
+            ObjectInputStream objectInputStream =
+                    new ObjectInputStream(new BufferedInputStream(
+                            new FileInputStream(russianRegion.name() + ".bin")));
+            osmRegion = (OsmRegion)objectInputStream.readObject();
+            objectInputStream.close();
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println("Не удалось восстановить объект из файла");
+        }
+        return osmRegion;
     }
 }
