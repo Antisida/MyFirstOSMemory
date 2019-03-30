@@ -63,7 +63,7 @@ public class BaseTest {
     void processReg(RussianRegion russianRegion) {
         if (isInnerTestComplete(russianRegion.id) == false) {
             OsmRegion osmRegion;
-            if (russianRegion.isRussian == false) {
+            if (russianRegion.id == 101 || russianRegion.id == 102) {
                 osmRegion = deSerializeOsmRegion(russianRegion);
                 innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
             } else {
@@ -82,7 +82,6 @@ public class BaseTest {
 //        if (isInnerTestComplete(ID) == false) {
 //            OsmRegion osmRegion;
 //            if (ID > 100){
-//                //todo добавить чтение сериализованного объекта
 //                osmRegion = new OsmRegion(ID);
 //                innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
 //            }else {
@@ -288,7 +287,7 @@ public class BaseTest {
         try {
             ObjectOutputStream outputStream =
                     new ObjectOutputStream(new BufferedOutputStream(
-                            new FileOutputStream(new File(osmRegion.name + ".bin"))));
+                            new FileOutputStream(new File("z:\\osmtmp\\" + osmRegion.name + ".bin"))));
             outputStream.writeObject(osmRegion);
             outputStream.close();
         } catch (IOException e) {
@@ -301,7 +300,7 @@ public class BaseTest {
         try {
             ObjectInputStream objectInputStream =
                     new ObjectInputStream(new BufferedInputStream(
-                            new FileInputStream(russianRegion.name() + ".bin")));
+                            new FileInputStream("z:\\osmtmp\\" + russianRegion.name() + ".bin")));
             osmRegion = (OsmRegion)objectInputStream.readObject();
             objectInputStream.close();
         } catch (ClassNotFoundException | IOException e) {
@@ -309,4 +308,6 @@ public class BaseTest {
         }
         return osmRegion;
     }
+
+
 }

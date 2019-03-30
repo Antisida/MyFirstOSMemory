@@ -2,7 +2,10 @@
 public class MainProgram {
     public static void main(String[] args) {
         BaseTest baseTest = new BaseTest();
+
+
         for (RussianRegion russianRegion: RussianRegion.values()){
+            if (!russianRegion.isRussian) continue;
             baseTest.aggregeteTest(russianRegion);
         }
 //        baseTest.aggregeteTest(29);
