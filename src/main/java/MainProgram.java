@@ -1,9 +1,10 @@
-
 public class MainProgram {
     public static void main(String[] args) {
         BaseTest baseTest = new BaseTest();
-
-
+//        OsmRegion osmRegion = baseTest.deSerializeOsmRegion(RussianRegion.SEVASTOPOL);
+//        for (LongSet longs: osmRegion.isolatedSets){
+//            System.out.println(longs);
+//        }
         for (RussianRegion russianRegion: RussianRegion.values()){
             if (!russianRegion.isRussian) continue;
             baseTest.aggregeteTest(russianRegion);

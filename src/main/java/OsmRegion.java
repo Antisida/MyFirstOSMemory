@@ -37,6 +37,7 @@ public class OsmRegion implements Serializable {
         this.neighbors = russianRegion.getNeighbors();
         this.outData = new ReadyData();
         this.outData.nameRegion = russianRegion.name();
+        if (!(russianRegion.id == 101 || russianRegion.id == 102)) //todo переделать
         loadO5Mfile(russianRegion.getPath());
     }
 

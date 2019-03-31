@@ -5,6 +5,7 @@ import org.alex73.osmemory.OsmWay;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static com.koloboke.collect.set.hash.HashLongSets.getDefaultFactory;
 
@@ -15,13 +16,13 @@ public class BaseTest {
     private static long timeFind;
     private static long delta = 0L;
     private static long timeFindSumm = 0L;
-    private static long timeMerge = 0;
+    private static long timeMerge = 0;//todo латвия перепутана с могилевым
     private static long timeMergeSumm = 0;
     private static long counter = 0;
 
-    static boolean[] outerTestCompletedRegions = new boolean[150];
+    static boolean[] outerTestCompletedRegions = new boolean[150]; //todo сюда не попадают пограничные регионы и юзфул не проходит
     static OsmRegion[] innerTestCompletedRegions = new OsmRegion[150];
-    static ReadyData[] finalDatas = new ReadyData[100];
+    static ReadyData[] finalDatas = new ReadyData[150]; //todo сюда попадают норвегия
 
     // обработан уже регион?
     boolean isInnerTestComplete(int iID) {
@@ -68,13 +69,12 @@ public class BaseTest {
                 innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
             } else {
                 osmRegion = new OsmRegion(russianRegion);
+                System.out.println("-----------------------");
+                System.out.println(osmRegion.name);
+                osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
+                osmRegion.O5M_Data = null;
+                innerTestCompletedRegions[russianRegion.id] = osmRegion;
             }
-
-            System.out.println("-----------------------");
-            System.out.println(osmRegion.name);
-            osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
-            osmRegion.O5M_Data = null;
-            innerTestCompletedRegions[russianRegion.id] = osmRegion;
         }
     }
 
@@ -230,6 +230,7 @@ public class BaseTest {
             ArrayList<LongSet> neighbrIsoletedSets = innerTestCompletedRegions[myNeighbor].isolatedSets;  // берем сеты у соседа
             myRegion.fofDeleteSets.addAll(simpleOuterConnectivityTest1(myIsoletedSets, neighbrIsoletedSets));
         }
+
         outerTestCompletedRegions[myRegion.ID] = true;
     }
 
@@ -260,9 +261,9 @@ public class BaseTest {
             if (
 //                   o.getTag("highway", data).equals("service") ||
 //                       o.getTag("highway", data).equals("living_street") ||
-                    o.getTag("highway", data).equals("unclassified") ||
+                   // o.getTag("highway", data).equals("unclassified") ||
 
-                            o.getTag("highway", data).equals("residential") ||
+                         //   o.getTag("highway", data).equals("residential") ||
                             o.getTag("highway", data).equals("tertiary") ||
 
                             o.getTag("highway", data).equals("tertiary_link") ||
@@ -284,28 +285,59 @@ public class BaseTest {
     }
 
     void serializeOsmRegion(OsmRegion osmRegion) {
+        ArrayList<LongSet> inputSet = osmRegion.isolatedSets;
+        ArrayList<HashSet<Long>> outSet = new ArrayList<>();
+        for (LongSet longs: inputSet){
+            HashSet<Long> hashSet = new HashSet<>(longs);
+            outSet.add(hashSet);
+        }
+
+
+
+
         try {
             ObjectOutputStream outputStream =
                     new ObjectOutputStream(new BufferedOutputStream(
                             new FileOutputStream(new File("z:\\osmtmp\\" + osmRegion.name + ".bin"))));
-            outputStream.writeObject(osmRegion);
+            outputStream.writeObject(osmRegion.name);
+            outputStream.writeObject(outSet);
             outputStream.close();
         } catch (IOException e) {
-            System.out.println("Не удалось создать bin-файл");
+            e.printStackTrace();
         }
+
+
     }
 
     OsmRegion deSerializeOsmRegion(RussianRegion russianRegion) {
-        OsmRegion osmRegion = null;
+        OsmRegion osmRegion = new OsmRegion(russianRegion);
+        HashLongSetFactory hashLongSetFactory = getDefaultFactory();
+        ArrayList<LongSet> outputSet = new ArrayList<>();
+       // LongSet longs;
+        ArrayList<HashSet<Long>> inputSet = new ArrayList<>();
         try {
             ObjectInputStream objectInputStream =
                     new ObjectInputStream(new BufferedInputStream(
                             new FileInputStream("z:\\osmtmp\\" + russianRegion.name() + ".bin")));
-            osmRegion = (OsmRegion)objectInputStream.readObject();
+            osmRegion.name = (String)objectInputStream.readObject();
+            inputSet = (ArrayList<HashSet<Long>>)objectInputStream.readObject();
             objectInputStream.close();
         } catch (ClassNotFoundException | IOException e) {
             System.out.println("Не удалось восстановить объект из файла");
         }
+//        for (HashSet<Long> h: inputSet){
+//            System.out.println(h);
+//        }
+
+
+//        for (HashSet<Long> hashSet: inputSet){
+//            LongSet longs;
+//            longs = hashLongSetFactory.newMutableSet(hashSet);
+//            outputSet.add(longs);
+//        }
+
+        osmRegion.isolatedSets = outputSet;
+
         return osmRegion;
     }
 
