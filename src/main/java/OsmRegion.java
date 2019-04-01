@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class OsmRegion implements Serializable {
     String name;
     int ID;
+    boolean isRussian;
     int[] neighbors;
     ArrayList<LongSet> isolatedSets; //для данных после теста связности этого региона
     transient MemoryStorage O5M_Data;
@@ -33,11 +34,12 @@ public class OsmRegion implements Serializable {
 
     public OsmRegion(RussianRegion russianRegion) {
         this.name = russianRegion.name();
+        this.isRussian = russianRegion.isRussian;
         this.ID = russianRegion.getId();
         this.neighbors = russianRegion.getNeighbors();
         this.outData = new ReadyData();
         this.outData.nameRegion = russianRegion.name();
-        if (!(russianRegion.id == 101 || russianRegion.id == 102)) //todo переделать
+       // if (!(russianRegion.id == 101 || russianRegion.id == 102)) //todo переделать
         loadO5Mfile(russianRegion.getPath());
     }
 

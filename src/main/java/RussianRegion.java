@@ -1,5 +1,9 @@
 enum RussianRegion {
+    EKATERINBURG(66, new int[]{2, 11, /*45,*/ 59, /*72,*/ /*74,*/ 86 }, "z:\\osmtmp\\RU-SVE.o5m", false),
     MURMANSK(51, new int[]{10, 101, 102}, "z:\\osmtmp\\RU-MUR.o5m", true ),
+    YAMAL(89, new int[]{11, /*24,*/ 83/*, 86*/}, "z:\\osmtmp\\RU-YAN.o5m", false ),
+    NORG(101, new int[]{51}, "z:\\osmtmp\\norway-latest.o5m", false),
+    FIN(102, new int[]{10, 47, 51}, "z:\\osmtmp\\finland-latest.o5m", false),
     PETROZAVODSK(10, new int[]{29, 35, 47, 51, 102}, "z:\\osmtmp\\RU-KR.o5m", true ),
     SPB(47, new int[]{10, 35, 53, 60, 102, 110}, "z:\\osmtmp\\RU-LEN.o5m", true ),
     ARHANGELSK(29, new int[]{10, 11, 35, 43, 83}, "z:\\osmtmp\\RU-ARK.o5m", true ),
@@ -66,20 +70,19 @@ enum RussianRegion {
     NARYAN_MAR(83, new int[]{11, 29, 89}, "z:\\osmtmp\\RU-NEN.o5m", true ),
 
     //пограничные регионы
-    HANTY_MAN(86, new int[]{11, 24, 55, 66, 70, 72, 89}, "z:\\osmtmp\\RU-KHM.o5m", false ),
-    YAMAL(89, new int[]{11, 24, 83, 86}, "z:\\osmtmp\\RU-YAN.o5m", false ),
-    EKATERINBURG(66, new int[]{2, 11, 45, 59, 72, 74, 86 }, "z:\\osmtmp\\RU-SVE.o5m", false),
-    CHELYABINSK(74, new int[]{2, 45, 56, 66, 131}, "z:\\osmtmp\\RU-CHE.o5m", false ),
+    HANTY_MAN(86, new int[]{11, /*24,*/ /*55,*/ 66, /*70,*/ /*72,*/ /*89*/}, "z:\\osmtmp\\RU-KHM.o5m", false ),
 
-    NORG(101, new int[]{51}, "z:\\osmtmp\\norway-latest.o5m", false),
-    FIN(102, new int[]{10, 47, 51}, "z:\\osmtmp\\finland-latest.o5m", false),
+
+    CHELYABINSK(74, new int[]{2, /*45,*/ 56, /*66,*/ /*131*/}, "z:\\osmtmp\\RU-CHE.o5m", false ),
+
+
 
     EST(110, new int[]{47, 60}, "z:\\osmtmp\\estonia-latest.o5m", false),
     LAT(111, new int[]{60}, "z:\\osmtmp\\latvia-latest.o5m", false),
 
-    BY_VITEBSK(112, new int[]{60, 67}, "z:\\osmtmp\\latvia-latest.o5m", false),
-    BY_MOGILEV(113, new int[]{32, 67}, "z:\\osmtmp\\latvia-latest.o5m", false),
-    BY_GOMEL(114, new int[]{32}, "z:\\osmtmp\\latvia-latest.o5m", false),
+    BY_VITEBSK(112, new int[]{60, 67}, "z:\\osmtmp\\BY-VI.o5m", false),
+    BY_MOGILEV(113, new int[]{32, 67}, "z:\\osmtmp\\BY-MO.o5m", false),
+    BY_GOMEL(114, new int[]{32}, "z:\\osmtmp\\BY-GO.o5m", false),
 
     UA_CHERNIGOV(115, new int[]{32}, "z:\\osmtmp\\UA-74.o5m", false),
     UA_SUMY(116, new int[]{31, 32, 46}, "z:\\osmtmp\\UA-59.o5m", false),

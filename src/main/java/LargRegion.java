@@ -19,13 +19,13 @@ public class LargRegion {
 //        OsmRegion nn = new OsmRegion(RussianRegion.SEVASTOPOL);
 //        nn.isolatedSets = baseTest.innerConnectivityTest(nn.O5M_Data);
 //        baseTest.serializeOsmRegion(nn);
-        OsmRegion nor = new OsmRegion(RussianRegion.NORG);
+       /* OsmRegion nor = new OsmRegion(RussianRegion.NORG);
         nor.isolatedSets = baseTest.innerConnectivityTest(nor.O5M_Data);
         nor.O5M_Data = null;
         baseTest.serializeOsmRegion(nor);
         nor.isolatedSets = null;
 
-        nor = null;
+        nor = null;*/
 
         OsmRegion fin = new OsmRegion(RussianRegion.FIN);
         fin.isolatedSets = baseTest.innerConnectivityTest(fin.O5M_Data);

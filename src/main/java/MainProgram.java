@@ -1,3 +1,5 @@
+import com.koloboke.collect.set.LongSet;
+
 public class MainProgram {
     public static void main(String[] args) {
         BaseTest baseTest = new BaseTest();
@@ -5,10 +7,16 @@ public class MainProgram {
 //        for (LongSet longs: osmRegion.isolatedSets){
 //            System.out.println(longs);
 //        }
-        for (RussianRegion russianRegion: RussianRegion.values()){
-            if (!russianRegion.isRussian) continue;
+       /* for (RussianRegion russianRegion: RussianRegion.values()){
+            //if (!russianRegion.isRussian) continue;
             baseTest.aggregeteTest(russianRegion);
-        }
+        }*/
+
+      OsmRegion osmRegion = baseTest.deSerializeOsmRegion(RussianRegion.FIN);
+      for (LongSet longs: osmRegion.isolatedSets){
+          System.out.println(osmRegion.name);
+          System.out.println(longs);
+      }
 //        baseTest.aggregeteTest(29);
 //        baseTest.aggregeteTest(11);
 //        baseTest.aggregeteTest(35);

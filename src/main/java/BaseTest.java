@@ -52,7 +52,7 @@ public class BaseTest {
 
                     System.out.println(o1.isolatedSets.size());
                     o1.outData.finalIsolatedSets = o1.isolatedSets;
-                    BaseTest.finalDatas[o1.ID] = o1.outData;
+                    if (o1.isRussian) BaseTest.finalDatas[o1.ID] = o1.outData;
                     o1.outData = null;
                     innerTestCompletedRegions[o1.ID] = null;
                 }
@@ -69,8 +69,9 @@ public class BaseTest {
                 innerTestCompletedRegions[osmRegion.ID] = osmRegion; //cразу добавляем десериализованный объект в массив
             } else {
                 osmRegion = new OsmRegion(russianRegion);
-                System.out.println("-----------------------");
-                System.out.println(osmRegion.name);
+                     System.out.println("-----------------------");
+
+                     System.out.println(osmRegion.name);
                 osmRegion.isolatedSets = innerConnectivityTest(osmRegion.O5M_Data);
                 osmRegion.O5M_Data = null;
                 innerTestCompletedRegions[russianRegion.id] = osmRegion;
@@ -220,15 +221,18 @@ public class BaseTest {
                         neighborRussianRegion = russianR;
                     }
                 }
+                System.out.println("Обработка соседей " + russianRegion.name());
                 processReg(neighborRussianRegion);
             }
         }
+        if (myRegion.isRussian) {
 
-        // проверяем связность с соседями и удаляем сеты, которые связаны с сетами соседа
-        ArrayList<LongSet> myIsoletedSets = myRegion.isolatedSets;
-        for (int myNeighbor : myRegion.neighbors) {        //для каждого соседа
-            ArrayList<LongSet> neighbrIsoletedSets = innerTestCompletedRegions[myNeighbor].isolatedSets;  // берем сеты у соседа
-            myRegion.fofDeleteSets.addAll(simpleOuterConnectivityTest1(myIsoletedSets, neighbrIsoletedSets));
+            // проверяем связность с соседями и удаляем сеты, которые связаны с сетами соседа
+            ArrayList<LongSet> myIsoletedSets = myRegion.isolatedSets;
+            for (int myNeighbor : myRegion.neighbors) {        //для каждого соседа
+                ArrayList<LongSet> neighbrIsoletedSets = innerTestCompletedRegions[myNeighbor].isolatedSets;  // берем сеты у соседа
+                myRegion.fofDeleteSets.addAll(simpleOuterConnectivityTest1(myIsoletedSets, neighbrIsoletedSets));
+            }
         }
 
         outerTestCompletedRegions[myRegion.ID] = true;
@@ -321,6 +325,7 @@ public class BaseTest {
                             new FileInputStream("z:\\osmtmp\\" + russianRegion.name() + ".bin")));
             osmRegion.name = (String)objectInputStream.readObject();
             inputSet = (ArrayList<HashSet<Long>>)objectInputStream.readObject();
+            System.out.println("ok");
             objectInputStream.close();
         } catch (ClassNotFoundException | IOException e) {
             System.out.println("Не удалось восстановить объект из файла");
