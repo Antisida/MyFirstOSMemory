@@ -35,11 +35,11 @@ enum RussianRegion {
     SMOLENSK(67, new int[]{32, 40, 50, 60, 69, 112, 113}, "z:\\osmtmp\\RU-SMO.o5m", true ),
     MOSCOW(50, new int[]{33, 40, 62, 67, 69, 71, 76}, "z:\\osmtmp\\RU-MOS.o5m", true ),
     KALUGA(40, new int[]{32, 50, 57, 67, 71}, "z:\\osmtmp\\RU-KLU.o5m", true ),
-    BRYANSK(32, new int[]{32, 46, 57, 67, 113, 114, 115, 116}, "z:\\osmtmp\\RU-BRY.o5m", true ),
+    BRYANSK(32, new int[]{40, 46, 57, 67, 113, 114, 115, 116}, "z:\\osmtmp\\RU-BRY.o5m", true ),
     TULA(71, new int[]{40, 48, 50, 57 ,62}, "z:\\osmtmp\\RU-TUL.o5m", true ),
     OREL(57, new int[]{32, 40, 46, 48, 71}, "z:\\osmtmp\\RU-ORL.o5m", true ),
 
-    KURSK(46, new int[]{31, 32, 36, 48, 57, 115}, "z:\\osmtmp\\RU-KRS.o5m", true ),
+    KURSK(46, new int[]{31, 32, 36, 48, 57, 116}, "z:\\osmtmp\\RU-KRS.o5m", true ),
     BELGOROD(31, new int[]{36, 46, 116, 117, 118}, "z:\\osmtmp\\RU-BEL.o5m", true ),
     LIPETSK(48, new int[]{36, 46, 57, 62, 68, 71}, "z:\\osmtmp\\RU-LIP.o5m", true ),
     TAMBOV(68, new int[]{36, 48, 58, 62, 64, }, "z:\\osmtmp\\RU-TAM.o5m", true ),
@@ -82,7 +82,7 @@ enum RussianRegion {
 
     BY_VITEBSK(112, new int[]{60, 67}, "z:\\osmtmp\\BY-VI.o5m", false),
     BY_MOGILEV(113, new int[]{32, 67}, "z:\\osmtmp\\BY-MO.o5m", false),
-    BY_GOMEL(114, new int[]{32}, "z:\\osmtmp\\BY-GO.o5m", false),
+    BY_GOMEL(114, new int[]{32}, "z:\\osmtmp\\BY-HO.o5m", false),
 
     UA_CHERNIGOV(115, new int[]{32}, "z:\\osmtmp\\UA-74.o5m", false),
     UA_SUMY(116, new int[]{31, 32, 46}, "z:\\osmtmp\\UA-59.o5m", false),

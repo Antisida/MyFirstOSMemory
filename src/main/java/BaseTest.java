@@ -16,10 +16,10 @@ public class BaseTest {
     private static long timeFind;
     private static long delta = 0L;
     private static long timeFindSumm = 0L;
-    private static long timeMerge = 0;//todo латвия перепутана с могилевым
+    private static long timeMerge = 0;
     private static long timeMergeSumm = 0;
     private static long counter = 0;
-
+//todo нижний новгород не правильно почемута
     static boolean[] outerTestCompletedRegions = new boolean[150]; //todo сюда не попадают пограничные регионы и юзфул не проходит
     static OsmRegion[] innerTestCompletedRegions = new OsmRegion[150];
     static ReadyData[] finalDatas = new ReadyData[150]; //todo сюда попадают норвегия
@@ -258,7 +258,7 @@ public class BaseTest {
         return forDeleteSets; // возвращаем список сетов которые имеют связанность, и которые можно удалить
     }
 
-
+//todo добавить паромы, сделать несколько вызовов по статусам
     private ArrayList<OsmWay> dataToWays(MemoryStorage data) {
         ArrayList<OsmWay> ss = new ArrayList<>();
         data.byTag("highway", o -> {//добавить сюда ferry = паром
@@ -335,11 +335,11 @@ public class BaseTest {
 //        }
 
 
-//        for (HashSet<Long> hashSet: inputSet){
-//            LongSet longs;
-//            longs = hashLongSetFactory.newMutableSet(hashSet);
-//            outputSet.add(longs);
-//        }
+        for (HashSet<Long> hashSet: inputSet){
+            LongSet longs;
+            longs = hashLongSetFactory.newMutableSet(hashSet);
+            outputSet.add(longs);
+        }
 
         osmRegion.isolatedSets = outputSet;
 

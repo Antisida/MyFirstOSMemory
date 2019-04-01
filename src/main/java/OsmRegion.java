@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OsmRegion implements Serializable {
-    String name;
+    String name; //todo надо завести поле isUsful и менять его, и только потом удалять регионы с этим полем
     int ID;
     boolean isRussian;
     int[] neighbors;
@@ -39,7 +39,7 @@ public class OsmRegion implements Serializable {
         this.neighbors = russianRegion.getNeighbors();
         this.outData = new ReadyData();
         this.outData.nameRegion = russianRegion.name();
-       // if (!(russianRegion.id == 101 || russianRegion.id == 102)) //todo переделать
+        if (!(russianRegion.id == 101 || russianRegion.id == 102)) //todo переделать
         loadO5Mfile(russianRegion.getPath());
     }
 

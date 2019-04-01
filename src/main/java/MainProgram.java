@@ -1,5 +1,5 @@
 import com.koloboke.collect.set.LongSet;
-
+//todo казахстан два раза обрабатывается
 public class MainProgram {
     public static void main(String[] args) {
         BaseTest baseTest = new BaseTest();
@@ -7,16 +7,18 @@ public class MainProgram {
 //        for (LongSet longs: osmRegion.isolatedSets){
 //            System.out.println(longs);
 //        }
-       /* for (RussianRegion russianRegion: RussianRegion.values()){
+        for (RussianRegion russianRegion: RussianRegion.values()){
             //if (!russianRegion.isRussian) continue;
             baseTest.aggregeteTest(russianRegion);
-        }*/
+        }
 
-      OsmRegion osmRegion = baseTest.deSerializeOsmRegion(RussianRegion.FIN);
+     /* OsmRegion osmRegion = baseTest.deSerializeOsmRegion(RussianRegion.NORG);
       for (LongSet longs: osmRegion.isolatedSets){
           System.out.println(osmRegion.name);
-          System.out.println(longs);
-      }
+          System.out.println(osmRegion.isolatedSets.size());
+          System.out.println(longs.size());
+          //System.out.println(longs);
+      }*/
 //        baseTest.aggregeteTest(29);
 //        baseTest.aggregeteTest(11);
 //        baseTest.aggregeteTest(35);
@@ -45,6 +47,13 @@ public class MainProgram {
 //        baseTest.aggregeteTest(12);
 //        baseTest.aggregeteTest(21);
 //        baseTest.aggregeteTest(73);
+
+        System.out.println("Почему-то остались в innerTestCompletedRegions: ");
+        for (OsmRegion osmRegion: BaseTest.innerTestCompletedRegions){
+            if(osmRegion != null){
+                System.out.println(osmRegion.name);
+            }
+        }
 
         for(ReadyData readyData: BaseTest.finalDatas){
             if (readyData != null) {
