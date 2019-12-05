@@ -8,8 +8,9 @@ public class SimpleMarkedNode {
     private int subgraphId;
     public HashSet<Long> neighbour;
 
-    public SimpleMarkedNode(long id, long wayId) {
+    public SimpleMarkedNode(long id, HashSet<Long> neighbour, long wayId) {
         this.id = id;
+        this.neighbour = neighbour;
         this.wayId = wayId;
     }
 

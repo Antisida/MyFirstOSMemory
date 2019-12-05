@@ -184,43 +184,36 @@ public class ConnectivityTestHashSet2 {
             //создаем ноду с id и с ссылкой на вей, к которому она относится
             HashSet<Long> hs = new HashSet<>();
             if (i > 0 & i < nodes.length - 1) {
-                System.out.println("0-0");
+//                System.out.println("0-0");
                 hs.add(nodes[i - 1]);
                 hs.add(nodes[i + 1]);
-                adjSet.merge(nodes[i], new SimpleMarkedNode(nodes[i], osmWay.getId()),
+//                System.out.println(hs);
+                adjSet.merge(nodes[i], new SimpleMarkedNode(nodes[i], hs, osmWay.getId()),
                         (old, newv) -> {
-                            newv.setNeighbour(hs);
-                         //   old.getNeighbour().addAll(newv.getNeighbour());
-                            hs.addAll(old.getNeighbour());
-                            old.setNeighbour(hs);
+                            old.getNeighbour().addAll(newv.getNeighbour());
                             return old;
                         });
 
             }
             if (i == 0) {
-                System.out.println("0");
+//                System.out.println("0");
                 hs.add(nodes[i + 1]);
-                adjSet.merge(nodes[0], new SimpleMarkedNode(nodes[0], osmWay.getId()),
+//                System.out.println(hs);
+                adjSet.merge(nodes[0], new SimpleMarkedNode(nodes[0], hs, osmWay.getId()),
                         (old, newv) -> {
-                            newv.setNeighbour(hs);
-                           // old.neighbour.addAll(hs);
-                            hs.addAll(old.getNeighbour());
-                            old.setNeighbour(hs);
-                         //   hs.addAll(old.getNeighbour());
-                         //   old.setNeighbour(hs);
+                            old.getNeighbour().addAll(newv.getNeighbour());
                             return old;
                         });
                 //   return adjSet;
             }
             if (i == nodes.length - 1) {
-                System.out.println("end");
+//                System.out.println("end");
                 hs.add(nodes[i - 1]);
-                adjSet.merge(nodes[nodes.length - 1], new SimpleMarkedNode(nodes[nodes.length - 1], osmWay.getId()),
+//                System.out.println(nodes[nodes.length - 1]);
+//                System.out.println(hs);
+                adjSet.merge(nodes[nodes.length - 1], new SimpleMarkedNode(nodes[nodes.length - 1], hs,  osmWay.getId()),
                         (old, newv) -> {
-                            newv.setNeighbour(hs);
-                          //  old.getNeighbour().addAll(newv.getNeighbour());
-                            hs.addAll(old.getNeighbour());
-                            old.setNeighbour(hs);
+                            old.getNeighbour().addAll(newv.getNeighbour());
                             return old;
                         });
                 //  return adjSet;
