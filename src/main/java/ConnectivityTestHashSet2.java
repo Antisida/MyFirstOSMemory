@@ -25,9 +25,11 @@ public class ConnectivityTestHashSet2 {
         ConnectivityTestHashSet2 connectivityTestHashSet = new ConnectivityTestHashSet2();
         MemoryStorage data = null;
         try {
-          //  data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
-            data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
-           // data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
+            // data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
+            //data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
+            data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
+          //  data = new O5MReader().read(new File("c:\\osm\\RU-KOS.o5m"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,7 +41,7 @@ public class ConnectivityTestHashSet2 {
         // объединяем найденные подграфы в один и удаляем ненужные
     }
 
-    private void connectivityMethod(ArrayList<OsmWay> inputWays){
+    private void connectivityMethod(ArrayList<OsmWay> inputWays) {
         long st = System.nanoTime();
         timeF = System.nanoTime();
 
@@ -47,26 +49,25 @@ public class ConnectivityTestHashSet2 {
         ArrayList<HashSet<Long>> generalListOfNodesOfSubgraf = new ArrayList<>(); //Массив 1 уровня для Set`ов точек, по индексу они соответствуют соответствующим массивам в
         ArrayList<OsmWay> firstSubgraf = new ArrayList<>();                     //для первого вея
         ArrayList<Integer> tempListForMergeSubgraf = new ArrayList<>(); //массивы для индексов объединямых субграфов и их точек
-        for (OsmWay osmWay: inputWays){              // берем попорядку веи из массива
+        for (OsmWay osmWay : inputWays) {              // берем попорядку веи из массива
 
             counter++;
 
             long[] nodeIDs;
             nodeIDs = osmWay.getNodeIds();         // вытаскиваем в массив id точек 1-го вея
-            if(generalListOfNodesOfSubgraf.isEmpty()) {    // если главный массив пуст, то добавляем туда первый сет
+            if (generalListOfNodesOfSubgraf.isEmpty()) {    // если главный массив пуст, то добавляем туда первый сет
                 HashSet<Long> tmp1 = new HashSet<>();    // новый set для точек обрабатываемого вея
                 for (long nID : nodeIDs) tmp1.add(nID);    // каждую точку добавляем в set
                 generalListOfNodesOfSubgraf.add(tmp1);   // сохраняем set точек первого вея в массив сетов
                 System.err.println("ПЕРВЫЙ ГРАФ ДОБАВЛЕН");
-            }
-            else {
+            } else {
                 tempListForMergeSubgraf.clear();
                 timeFind = System.nanoTime();
                 for (HashSet<Long> set : generalListOfNodesOfSubgraf) { // для каждого сета точек, которые уже находятся
                     for (long Lo : nodeIDs) {// сравниваем точки
                         if (set.contains(Lo)) {
                             if (!tempListForMergeSubgraf.contains(generalListOfNodesOfSubgraf.indexOf(set)))
-                            tempListForMergeSubgraf.add(generalListOfNodesOfSubgraf.indexOf(set));  // если точка найдена добавляем индекс сета в массив для объединения
+                                tempListForMergeSubgraf.add(generalListOfNodesOfSubgraf.indexOf(set));  // если точка найдена добавляем индекс сета в массив для объединения
                         }
                     }
                 }
@@ -79,7 +80,7 @@ public class ConnectivityTestHashSet2 {
 
                     int indexFforMerge = tempListForMergeSubgraf.get(0);
                     //добавляем точки к сету точек
-                   // добавляем точки вея к первому набору точек, в котором совпадение обнаружилось
+                    // добавляем точки вея к первому набору точек, в котором совпадение обнаружилось
                     HashSet<Long> tmpSet = generalListOfNodesOfSubgraf.get(indexFforMerge);
                     for (long LL : nodeIDs) {
                         tmpSet.add(LL);
@@ -100,9 +101,9 @@ public class ConnectivityTestHashSet2 {
                         tmpSetFMerge.addAll(generalListOfNodesOfSubgraf.get(integer));
                     }
 
-                    for (int integer1 = tempListForMergeSubgraf.size() - 1; integer1 > -1; integer1--){
+                    for (int integer1 = tempListForMergeSubgraf.size() - 1; integer1 > -1; integer1--) {
                         int nSub = tempListForMergeSubgraf.get(integer1);
-                            generalListOfNodesOfSubgraf.remove(nSub);
+                        generalListOfNodesOfSubgraf.remove(nSub);
                     }
                     generalListOfNodesOfSubgraf.add(tmpSetFMerge);
 
@@ -117,12 +118,12 @@ public class ConnectivityTestHashSet2 {
                 }
             }
 
-            if(counter%10_000 == 0){
+            if (counter % 10_000 == 0) {
                 delta = (System.nanoTime()) - timeF;
-                System.err.println("Среднее за 10_000 = " + delta/10_000_000_000F);
+                System.err.println("Среднее за 10_000 = " + delta / 10_000_000_000F);
                 System.out.println("размер = " + generalListOfNodesOfSubgraf.size());
-                System.out.println("Среднее время поиска = " + timeFindSumm/10_000_000_000F);
-                System.out.println("Среднее время объединения = " + timeMergeSumm/10_000_000_000F);
+                System.out.println("Среднее время поиска = " + timeFindSumm / 10_000_000_000F);
+                System.out.println("Среднее время объединения = " + timeMergeSumm / 10_000_000_000F);
                 timeF = System.nanoTime();
                 timeFindSumm = 0;
                 timeMergeSumm = 0;
@@ -130,92 +131,114 @@ public class ConnectivityTestHashSet2 {
         }
 
         delta = (System.nanoTime()) - timeF;
-        System.err.println("Среднее за 10_000 = " + delta/10_000_000_000F);
+        System.err.println("Среднее за 10_000 = " + delta / 10_000_000_000F);
         System.out.println("размер = " + generalListOfNodesOfSubgraf.size());
-        System.out.println("Среднее время поиска = " + timeFindSumm/10_000_000_000F);
-        System.out.println("Среднее время объединения = " + timeMergeSumm/10_000_000_000F);
+        System.out.println("Среднее время поиска = " + timeFindSumm / 10_000_000_000F);
+        System.out.println("Среднее время объединения = " + timeMergeSumm / 10_000_000_000F);
 
 
         long fn = System.nanoTime();
         System.out.println("-----------------------");
-        System.out.println("Время:" + (fn - st)/1000_000_000 + "сек");
+        System.out.println("Время:" + (fn - st) / 1000_000_000 + "сек");
         System.err.println("Количество графов: " + generalListOfNodesOfSubgraf.size());
         System.out.println("-----------------------");
         int size1 = 0;
-        for (HashSet<Long> set: generalListOfNodesOfSubgraf){
-            System.out.println("Размер графа: " +set.size());
-            size1 =size1+ set.size();
-            if (set.size() < 2000){
-                for (Long Lpo: set){
+        for (HashSet<Long> set : generalListOfNodesOfSubgraf) {
+            System.out.println("Размер графа: " + set.size());
+            size1 = size1 + set.size();
+            if (set.size() < 2000) {
+                for (Long Lpo : set) {
                     System.out.print(Lpo + " ");
                 }
                 System.out.println();
             }
         }
-        System.out.println("all = "+ size1);
+        System.out.println("all = " + size1);
     }
 
-    public HashMap<SimpleMarkedNode, HashSet<Long>> createAdjList(ArrayList<OsmWay> osmWays){
+    public HashMap<Long, SimpleMarkedNode> createAdjList(ArrayList<OsmWay> osmWays) {
 
-        HashMap<SimpleMarkedNode, HashSet<Long>> adjList = new HashMap<>();
+        HashMap<Long, SimpleMarkedNode> adjList = new HashMap<>();
 
-        for(OsmWay osmWay: osmWays){
+        for (OsmWay osmWay : osmWays) {
             getAdjSetForWay(osmWay, adjList);
         }
 
         System.out.println(adjList.size());
-        System.out.println(adjList.get(new SimpleMarkedNode(580334994L, 1)));
+        System.out.println(adjList.get(580334994L));
 
         return adjList;
     }
 
-    public HashMap<SimpleMarkedNode, HashSet<Long>> getAdjSetForWay(OsmWay osmWay, HashMap<SimpleMarkedNode, HashSet<Long>> adjSet){
-        if (osmWay.getNodeIds().length < 2){
+    public HashMap<Long, SimpleMarkedNode> getAdjSetForWay(OsmWay osmWay, HashMap<Long, SimpleMarkedNode> adjSet) {
+
+        if (osmWay.getNodeIds().length < 2) {
             System.out.println("!");
             return adjSet;
         }
+
         long[] nodes = osmWay.getNodeIds();
         int i = 0;
-        while (i < nodes.length){
-          //  long node = nodes[i];
+        while (i < nodes.length) {
+            //  long node = nodes[i];
             //создаем ноду с id и с ссылкой на вей, к которому она относится
             HashSet<Long> hs = new HashSet<>();
-            if (i > 0 & i < nodes.length - 1){
+            if (i > 0 & i < nodes.length - 1) {
+                System.out.println("0-0");
                 hs.add(nodes[i - 1]);
                 hs.add(nodes[i + 1]);
-                adjSet.merge(new SimpleMarkedNode(nodes[i], osmWay.getId()), hs, (old, newv) -> {
-                    old.addAll(newv);
-                    return old;});
+                adjSet.merge(nodes[i], new SimpleMarkedNode(nodes[i], osmWay.getId()),
+                        (old, newv) -> {
+                            newv.setNeighbour(hs);
+                         //   old.getNeighbour().addAll(newv.getNeighbour());
+                            hs.addAll(old.getNeighbour());
+                            old.setNeighbour(hs);
+                            return old;
+                        });
 
             }
-            if (i == 0){
+            if (i == 0) {
+                System.out.println("0");
                 hs.add(nodes[i + 1]);
-                adjSet.merge(new SimpleMarkedNode(nodes[0], osmWay.getId()), hs, (old, newv) -> {
-                    old.addAll(newv);
-                    return old;});
-             //   return adjSet;
+                adjSet.merge(nodes[0], new SimpleMarkedNode(nodes[0], osmWay.getId()),
+                        (old, newv) -> {
+                            newv.setNeighbour(hs);
+                           // old.neighbour.addAll(hs);
+                            hs.addAll(old.getNeighbour());
+                            old.setNeighbour(hs);
+                         //   hs.addAll(old.getNeighbour());
+                         //   old.setNeighbour(hs);
+                            return old;
+                        });
+                //   return adjSet;
             }
             if (i == nodes.length - 1) {
+                System.out.println("end");
                 hs.add(nodes[i - 1]);
-                adjSet.merge(new SimpleMarkedNode(nodes[nodes.length - 1], osmWay.getId()), hs, (old, newv) -> {
-                    old.addAll(newv);
-                    return old;});
-              //  return adjSet;
+                adjSet.merge(nodes[nodes.length - 1], new SimpleMarkedNode(nodes[nodes.length - 1], osmWay.getId()),
+                        (old, newv) -> {
+                            newv.setNeighbour(hs);
+                          //  old.getNeighbour().addAll(newv.getNeighbour());
+                            hs.addAll(old.getNeighbour());
+                            old.setNeighbour(hs);
+                            return old;
+                        });
+                //  return adjSet;
             }
+
             i++;
         }
         return adjSet;
     }
 
-    HashSet<SimpleMarkedNode> connTest(HashMap<SimpleMarkedNode, HashSet<Long>> adjSet){
-        while (adjSet.keySet().stream().anyMatch(k -> !k.isVisited())) {
-            long l = adjSet.keySet().stream().filter(k -> !k.isVisited()).findFirst().map(d -> d.)get().getId();
-            Stack<Long> stack = new Stack<>();
-            stack.push(l);
-        }
-        return null;
-    }
-
+//    HashSet<SimpleMarkedNode> connTest(HashMap<SimpleMarkedNode, HashSet<Long>> adjSet) {
+//        while (adjSet.keySet().stream().anyMatch(k -> !k.isVisited())) {
+//            long l = adjSet.keySet().stream().filter(k -> !k.isVisited()).findFirst().map(d -> d.) get().getId();
+//            Stack<Long> stack = new Stack<>();
+//            stack.push(l);
+//        }
+//        return null;
+//    }
 
 
     /*  Метод возвращающий ArrayList всех значащих веев */
@@ -223,7 +246,7 @@ public class ConnectivityTestHashSet2 {
         ArrayList<OsmWay> ss = new ArrayList<>();
         data.byTag("highway", o -> {
             if (
-                           o.getTag("highway", data).equals("service") ||
+                    o.getTag("highway", data).equals("service") ||
                             o.getTag("highway", data).equals("unclassified") ||
                             o.getTag("highway", data).equals("residential") ||
                             o.getTag("highway", data).equals("tertiary") ||
@@ -237,7 +260,7 @@ public class ConnectivityTestHashSet2 {
                             o.getTag("highway", data).equals("primary_link") ||
                             o.getTag("highway", data).equals("tertiary_link") ||
                             o.getTag("highway", data).equals("secondary_link")
-                    )
+            )
                 if (o instanceof OsmWay) ss.add((OsmWay) o);
         });
         return ss;

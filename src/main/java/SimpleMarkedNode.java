@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Objects;
 
 public class SimpleMarkedNode {
@@ -5,6 +6,7 @@ public class SimpleMarkedNode {
     private long wayId;
     private boolean visited;
     private int subgraphId;
+    public HashSet<Long> neighbour;
 
     public SimpleMarkedNode(long id, long wayId) {
         this.id = id;
@@ -41,6 +43,14 @@ public class SimpleMarkedNode {
 
     public void setSubgraphId(int subgraphId) {
         this.subgraphId = subgraphId;
+    }
+
+    public HashSet<Long> getNeighbour() {
+        return neighbour;
+    }
+
+    public void setNeighbour(HashSet<Long> neighbour) {
+        this.neighbour = neighbour;
     }
 
     @Override
