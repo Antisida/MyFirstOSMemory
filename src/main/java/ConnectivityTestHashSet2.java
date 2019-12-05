@@ -1,6 +1,5 @@
 import org.alex73.osmemory.MemoryStorage;
 import org.alex73.osmemory.O5MReader;
-import org.alex73.osmemory.OsmNode;
 import org.alex73.osmemory.OsmWay;
 
 import java.io.File;
@@ -26,8 +25,8 @@ public class ConnectivityTestHashSet2 {
         MemoryStorage data = null;
         try {
             // data = new O5MReader().read(new File("e:\\osmtmp\\RU-SEV.o5m"));
-            //data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
-            data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
+            data = new O5MReader().read(new File("e:\\osmtmp\\RU-NIZ.o5m"));
+          //  data = new O5MReader().read(new File("c:\\osm\\RU-N_01.o5m"));
           //  data = new O5MReader().read(new File("c:\\osm\\RU-KOS.o5m"));
 
         } catch (Exception e) {
@@ -224,14 +223,16 @@ public class ConnectivityTestHashSet2 {
         return adjSet;
     }
 
-//    HashSet<SimpleMarkedNode> connTest(HashMap<SimpleMarkedNode, HashSet<Long>> adjSet) {
-//        while (adjSet.keySet().stream().anyMatch(k -> !k.isVisited())) {
-//            long l = adjSet.keySet().stream().filter(k -> !k.isVisited()).findFirst().map(d -> d.) get().getId();
-//            Stack<Long> stack = new Stack<>();
-//            stack.push(l);
-//        }
-//        return null;
-//    }
+    HashSet<SimpleMarkedNode> connTest(HashMap<Long, SimpleMarkedNode> adjSet) {
+
+        while (adjSet.values().stream().anyMatch(k -> !k.isVisited())) {
+            SimpleMarkedNode smn = adjSet.values().stream().filter(k -> !k.isVisited()).findFirst().orElse(null);
+            long lng = smn.getId();
+            Stack<Long> stack = new Stack<>();
+            stack.push(lng);
+        }
+        return null;
+    }
 
 
     /*  Метод возвращающий ArrayList всех значащих веев */
